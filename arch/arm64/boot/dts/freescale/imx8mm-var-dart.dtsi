@@ -117,7 +117,7 @@
 	cpu-supply = <&buck2_reg>;
 };
 
-&ddrc {
+/*&ddrc {
 	operating-points-v2 = <&ddrc_opp_table>;
 
 	ddrc_opp_table: opp-table {
@@ -135,7 +135,7 @@
 			opp-hz = /bits/ 64 <750000000>;
 		};
 	};
-};
+};*/
 
 &fec1 {
 	pinctrl-names = "default", "sleep";

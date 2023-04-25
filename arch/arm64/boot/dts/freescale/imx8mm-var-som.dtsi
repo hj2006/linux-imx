@@ -11,7 +11,7 @@
 #include "imx8mm-android.dtsi"
 
 / {
-	compatible = "variscite,dart-mx8mm", "fsl,imx8mm";
+	compatible = "variscite,imx8mm-var-som", "fsl,imx8mm";
 
 	panel_lvds: panel-lvds {
 		compatible = "panel-lvds";
@@ -113,7 +113,7 @@
 	cpu-supply = <&buck2_reg>;
 };
 
-&ddrc {
+/*&ddrc {
 	operating-points-v2 = <&ddrc_opp_table>;
 
 	ddrc_opp_table: opp-table {
@@ -127,7 +127,7 @@
 			opp-hz = /bits/ 64 <600000000>;
 		};
 	};
-};
+};*/
 
 &fec1 {
 	pinctrl-names = "default", "sleep";
