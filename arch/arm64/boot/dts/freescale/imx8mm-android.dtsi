@@ -22,11 +22,6 @@
 
 };
 
-&lcdif {
-       status = "okay";
-};
-
-
 &resmem {
 	status = "disabled";
 	ramoops@0xbdf00000 {
