@@ -70,6 +70,7 @@
                 compatible = "net,rfkill-gpio";
                 pinctrl-names = "default";
                 reset-gpios = <&gpio2 7 GPIO_ACTIVE_HIGH>;
+		reset-delay = <500>;
                 name = "wifi_rfkill";
                 type = "wlan";
                 status = "okay";
@@ -81,7 +82,7 @@
                 pinctrl-0 = <&pinctrl_bt>;
                 reset-gpios = <&gpio2 6 GPIO_ACTIVE_HIGH>;
                 shutdown-gpios = <&gpio2 9 GPIO_ACTIVE_LOW>;
-		reset-delay = <20>;
+		reset-delay = <200>;
                 name = "bt_rfkill";
                 type = "bluetooth";
                 status = "okay";

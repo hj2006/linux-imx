@@ -325,9 +325,9 @@ struct rte_console {
 					 */
 #define BRCMF_IDLE_INTERVAL	1
 
-#define KSO_WAIT_US 50
+#define KSO_WAIT_US 500
 #define MAX_KSO_ATTEMPTS (PMU_MAX_TRANSITION_DLY/KSO_WAIT_US)
-#define BRCMF_SDIO_MAX_ACCESS_ERRORS	5
+#define BRCMF_SDIO_MAX_ACCESS_ERRORS	50
 
 #ifdef DEBUG
 /* Device console log buffer state */
@@ -690,7 +690,7 @@ brcmf_sdio_kso_control(struct brcmf_sdio *bus, bool on)
 	int err_cnt = 0;
 	int try_cnt = 0;
 
-	brcmf_dbg(TRACE, "Enter: on=%d\n", on);
+	brcmf_err( "Enter: on=%d\n", on);
 
 	sdio_retune_crc_disable(bus->sdiodev->func1);
 
@@ -2289,7 +2289,7 @@ static int brcmf_sdio_txpkt(struct brcmf_sdio *bus, struct sk_buff_head *pktq,
 	int ret;
 	struct sk_buff *pkt_next, *tmp;
 
-	brcmf_dbg(TRACE, "Enter\n");
+	brcmf_err( "Enter\n");
 
 	ret = brcmf_sdio_txpkt_prep(bus, pktq, chan);
 	if (ret)
@@ -2326,7 +2326,7 @@ static uint brcmf_sdio_sendfromq(struct brcmf_sdio *bus, uint maxframes)
 	uint cnt = 0;
 	u8 tx_prec_map, pkt_num;
 
-	brcmf_dbg(TRACE, "Enter\n");
+	brcmf_err( "Enter\n");
 
 	tx_prec_map = ~bus->flowcontrol;
 
@@ -2461,7 +2461,7 @@ static void brcmf_sdio_bus_stop(struct device *dev)
 	u8 saveclk, bpreq;
 	int err;
 
-	brcmf_dbg(TRACE, "Enter\n");
+	brcmf_err( "Enter\n");
 
 	if (bus->watchdog_tsk) {
 		send_sig(SIGTERM, bus->watchdog_tsk, 1);
@@ -2790,7 +2790,7 @@ static int brcmf_sdio_bus_txdata(struct device *dev, struct sk_buff *pkt)
 	struct brcmf_sdio_dev *sdiodev = bus_if->bus_priv.sdio;
 	struct brcmf_sdio *bus = sdiodev->bus;
 
-	brcmf_dbg(TRACE, "Enter: pkt: data %p len %d\n", pkt->data, pkt->len);
+	brcmf_err( "Enter: pkt: data %p len %d\n", pkt->data, pkt->len);
 	if (sdiodev->state != BRCMF_SDIOD_DATA)
 		return -EIO;
 
@@ -2808,7 +2808,7 @@ static int brcmf_sdio_bus_txdata(struct device *dev, struct sk_buff *pkt)
 
 	/* Check for existing queue, current flow-control,
 			 pending event, or pending clock */
-	brcmf_dbg(TRACE, "deferring pktq len %d\n", pktq_len(&bus->txq));
+	brcmf_err( "deferring pktq len %d\n", pktq_len(&bus->txq));
 	bus->sdcnt.fcqueued++;
 
 	/* Priority based enq */
@@ -2926,7 +2926,7 @@ brcmf_sdio_bus_txctl(struct device *dev, unsigned char *msg, uint msglen)
 	struct brcmf_sdio *bus = sdiodev->bus;
 	int ret;
 
-	brcmf_dbg(TRACE, "Enter\n");
+	brcmf_err( "Enter\n");
 	if (sdiodev->state != BRCMF_SDIOD_DATA)
 		return -EIO;
 
@@ -3239,7 +3239,7 @@ brcmf_sdio_bus_rxctl(struct device *dev, unsigned char *msg, uint msglen)
 	struct brcmf_sdio_dev *sdiodev = bus_if->bus_priv.sdio;
 	struct brcmf_sdio *bus = sdiodev->bus;
 
-	brcmf_dbg(TRACE, "Enter\n");
+	brcmf_err( "Enter\n");
 	if (sdiodev->state != BRCMF_SDIOD_DATA)
 		return -EIO;
 
@@ -3337,7 +3337,7 @@ static int brcmf_sdio_download_code_file(struct brcmf_sdio *bus,
 {
 	int err;
 
-	brcmf_dbg(TRACE, "Enter\n");
+	brcmf_err( "Enter\n");
 
 	err = brcmf_sdiod_ramrw(bus->sdiodev, true, bus->ci->rambase,
 				(u8 *)fw->data, fw->size);
@@ -3357,7 +3357,7 @@ static int brcmf_sdio_download_nvram(struct brcmf_sdio *bus,
 	int address;
 	int err;
 
-	brcmf_dbg(TRACE, "Enter\n");
+	brcmf_err( "Enter\n");
 
 	address = bus->ci->ramsize - varsz + bus->ci->rambase;
 	err = brcmf_sdiod_ramrw(bus->sdiodev, true, address, vars, varsz);
@@ -3427,7 +3427,7 @@ static void brcmf_sdio_sr_init(struct brcmf_sdio *bus)
 	u8 cardcap;
 	u8 chipclkcsr;
 
-	brcmf_dbg(TRACE, "Enter\n");
+	brcmf_err( "Enter\n");
 
 	if (brcmf_chip_is_ulp(bus->ci)) {
 		wakeupctrl = SBSDIO_FUNC1_WCTRL_ALPWAIT_SHIFT;
@@ -3484,7 +3484,7 @@ static int brcmf_sdio_kso_init(struct brcmf_sdio *bus)
 	u8 val;
 	int err = 0;
 
-	brcmf_dbg(TRACE, "Enter\n");
+	brcmf_err( "Enter\n");
 
 	/* KSO bit added in SDIO core rev 12 */
 	if (core->rev < 12)
@@ -3628,7 +3628,7 @@ void brcmf_sdio_trigger_dpc(struct brcmf_sdio *bus)
 
 void brcmf_sdio_isr(struct brcmf_sdio *bus, bool in_isr)
 {
-	brcmf_dbg(TRACE, "Enter\n");
+	brcmf_err( "Enter\n");
 
 	if (!bus) {
 		brcmf_err("bus is null pointer, exiting\n");
@@ -4194,7 +4194,7 @@ static void brcmf_sdio_firmware_callback(struct device *dev, int err,
 	u8 saveclk, bpreq;
 	u8 devctl;
 
-	brcmf_dbg(TRACE, "Enter: dev=%s, err=%d\n", dev_name(dev), err);
+	brcmf_err( "Enter: dev=%s, err=%d\n", dev_name(dev), err);
 
 	if (err)
 		goto fail;
@@ -4387,7 +4387,7 @@ checkdied:
 release:
 	sdio_release_host(sdiod->func1);
 fail:
-	brcmf_dbg(TRACE, "failed: dev=%s, err=%d\n", dev_name(dev), err);
+	brcmf_err( "failed: dev=%s, err=%d\n", dev_name(dev), err);
 	device_release_driver(&sdiod->func2->dev);
 	device_release_driver(dev);
 }
@@ -4422,7 +4422,7 @@ struct brcmf_sdio *brcmf_sdio_probe(struct brcmf_sdio_dev *sdiodev)
 	struct workqueue_struct *wq;
 	struct brcmf_fw_request *fwreq;
 
-	brcmf_dbg(TRACE, "Enter\n");
+	brcmf_err( "Enter\n");
 
 	/* Allocate private bus interface state */
 	bus = kzalloc(sizeof(struct brcmf_sdio), GFP_ATOMIC);
@@ -4527,7 +4527,7 @@ fail:
 /* Detach and free everything */
 void brcmf_sdio_remove(struct brcmf_sdio *bus)
 {
-	brcmf_dbg(TRACE, "Enter\n");
+	brcmf_err( "Enter\n");
 
 	if (bus) {
 		/* Stop watchdog task */
@@ -4540,12 +4540,16 @@ void brcmf_sdio_remove(struct brcmf_sdio *bus)
 		/* De-register interrupt handler */
 		brcmf_sdiod_intr_unregister(bus->sdiodev);
 
-		brcmf_detach(bus->sdiodev->dev);
-		brcmf_free(bus->sdiodev->dev);
-
 		cancel_work_sync(&bus->datawork);
+		
+
 		if (bus->brcmf_wq)
 			destroy_workqueue(bus->brcmf_wq);
+		
+		if (bus->sdiodev->dev) {
+			brcmf_detach(bus->sdiodev->dev);
+			brcmf_free(bus->sdiodev->dev);
+		}
 
 		if (bus->ci) {
 			if (bus->sdiodev->state != BRCMF_SDIOD_NOMEDIUM) {
@@ -4571,7 +4575,7 @@ void brcmf_sdio_remove(struct brcmf_sdio *bus)
 		kfree(bus);
 	}
 
-	brcmf_dbg(TRACE, "Disconnected\n");
+	brcmf_err( "Disconnected\n");
 }
 
 void brcmf_sdio_wd_timer(struct brcmf_sdio *bus, bool active)
