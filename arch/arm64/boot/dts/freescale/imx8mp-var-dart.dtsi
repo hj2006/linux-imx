@@ -381,8 +381,11 @@
 	pinctrl-1 = <&pinctrl_usdhc1_100mhz>, <&pinctrl_wifi>;
 	pinctrl-2 = <&pinctrl_usdhc1_200mhz>, <&pinctrl_wifi>;
 	bus-width = <4>;
+	no-1-8-v;
 	non-removable;
-	keep-power-in-suspend;
+	pm-ignore-notify;
+	cap-power-off-card;
+	/delete-property/ enable-sdio-wakeup;
 	status = "okay";
 	vmmc-supply = <&reg_wifi_3v3>;
 
